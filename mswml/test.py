@@ -18,9 +18,9 @@ from scipy import stats
 parser = argparse.ArgumentParser(description='Get all command line arguments.')
 # model
 parser.add_argument('--num_models', type=int, default=3, 
-					help='Number of models in ensemble')
+                    help='Number of models in ensemble')
 parser.add_argument('--path_model', type=str, default='', 
-					help='Specify the dir to al the trained models')
+                    help='Specify the dir to al the trained models')
 # data
 parser.add_argument('--path_data', type=str, required=True, 
                     help='Specify the path to the directory with FLAIR images')
@@ -30,7 +30,7 @@ parser.add_argument('--path_gts', type=str, required=True,
 parser.add_argument('--num_workers', type=int, default=1, 
                     help='Number of workers to preprocess images')
 parser.add_argument('--n_jobs', type=int, default=1, 
-					help='Number of parallel workers for F1 score computation')
+                    help='Number of parallel workers for F1 score computation')
 # hyperparameters
 parser.add_argument('--threshold', type=float, default=0.35, 
                     help='Probability threshold')
@@ -57,12 +57,12 @@ def main(args):
     models = []
     for i in range(K):
         models.append(UNet(
-			        spatial_dims=3,
-			        in_channels=1,
-			        out_channels=2,
-			        channels=(32, 64, 128, 256, 512),
-			        strides=(2, 2, 2, 2),
-			        num_res_units=0).to(device)
+                    spatial_dims=3,
+                    in_channels=1,
+                    out_channels=2,
+                    channels=(32, 64, 128, 256, 512),
+                    strides=(2, 2, 2, 2),
+                    num_res_units=0).to(device)
         )
     
     for i, model in enumerate(models):
@@ -80,41 +80,41 @@ def main(args):
 
     ''' Evaluatioin loop '''
     with Parallel(n_jobs=args.n_jobs) as parallel_backend:
-	    with torch.no_grad():
-	        for count, batch_data in enumerate(val_loader):
-	            inputs, gt  = (
+        with torch.no_grad():
+            for count, batch_data in enumerate(val_loader):
+                inputs, gt  = (
                     batch_data["image"].to(device), 
                     batch_data["label"].cpu().numpy(),
                     )
-	            
+
                 # get ensemble predictions
                 all_outputs = []
-	            for model in models:
-	                outputs = sliding_window_inference(inputs, roi_size, 
+                for model in models:
+                    outputs = sliding_window_inference(inputs, roi_size, 
                                                     sw_batch_size, model, 
                                                     mode='gaussian')
-	                outputs = act(outputs).cpu().numpy()
-	                outputs = np.squeeze(outputs[0,1])
-	                all_outputs.append(outputs)
-	            all_outputs = np.asarray(all_outputs)
+                    outputs = act(outputs).cpu().numpy()
+                    outputs = np.squeeze(outputs[0,1])
+                    all_outputs.append(outputs)
+                all_outputs = np.asarray(all_outputs)
 
-	            # obtain binary segmentation mask
-	            seg = np.mean(all_outputs, axis=0)
-	            seg[seg >= th] = 1
-	            seg[seg < th] = 0
-	            seg= np.squeeze(seg)
-	            seg = remove_connected_components(seg)
-	  
-	            gt = np.squeeze(gt)
+                # obtain binary segmentation mask
+                seg = np.mean(all_outputs, axis=0)
+                seg[seg >= th] = 1
+                seg[seg < th] = 0
+                seg= np.squeeze(seg)
+                seg = remove_connected_components(seg)
+      
+                gt = np.squeeze(gt)
 
-	            # compute metrics
-	            ndsc += [dice_norm_metric(ground_truth=gt, predictions=seg)]
+                # compute metrics
+                ndsc += [dice_norm_metric(ground_truth=gt, predictions=seg)]
                 dsc += [dice_metric(ground_truth=gt, predictions=seg)]
 
                 lesion_load += np.sum(gt) / len(gt.flatten())
                 
                 # for nervous people
-	            if count % 10 == 0: print(f"Processed {count}/{len(val_loader)}")
+                if count % 10 == 0: print(f"Processed {count}/{len(val_loader)}")
                 
 
     
