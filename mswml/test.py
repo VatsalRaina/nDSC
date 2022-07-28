@@ -111,7 +111,7 @@ def main(args):
                 ndsc += [dice_norm_metric(ground_truth=gt, predictions=seg)]
                 dsc += [dice_metric(ground_truth=gt, predictions=seg)]
 
-                lesion_load += np.sum(gt) / len(gt.flatten())
+                lesion_load += [np.sum(gt) / len(gt.flatten())]
                 
                 # for nervous people
                 if count % 10 == 0: print(f"Processed {count}/{len(val_loader)}")
