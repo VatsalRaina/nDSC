@@ -81,7 +81,7 @@ def main(args):
         strides=(2, 2, 2, 2),
         num_res_units=0).to(device)
 
-    loss_function = nn.CrossEntropyLoss(weight=torch.Tensor([1, 788]))
+    loss_function = nn.CrossEntropyLoss(weight=torch.Tensor([1, 788]).to(device))
     optimizer = torch.optim.Adam(model.parameters(), args.learning_rate)
     act = nn.Softmax(dim=1)
 
