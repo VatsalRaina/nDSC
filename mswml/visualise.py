@@ -138,15 +138,15 @@ def main(args):
     y = ndsc.tolist()
     plt.plot(x, y, 'o', color='black')
     plt.xlabel("Lesion load (%)")
-    plt.ylabel("nDSC")
-    plt.savefig("ndsc.png")
+    plt.ylabel("nDSC (%)")
+    plt.savefig("./ndsc.png")
     plt.clf()
 
     y = dsc.tolist()
     plt.plot(x, y, 'o', color='black')
     plt.xlabel("Lesion load (%)")
     plt.ylabel("DSC")
-    plt.savefig("dsc.png")
+    plt.savefig("./dsc.png")
     plt.clf()
 
 
