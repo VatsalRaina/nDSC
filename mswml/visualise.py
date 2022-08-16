@@ -139,6 +139,7 @@ def main(args):
     plt.plot(x, y, 'o', color='black')
     plt.xlabel("Lesion load (%)")
     plt.ylabel("nDSC (%)")
+    plt.ylim([10,95])
     plt.savefig("./ndsc.png")
     plt.clf()
 
@@ -146,6 +147,7 @@ def main(args):
     plt.plot(x, y, 'o', color='black')
     plt.xlabel("Lesion load (%)")
     plt.ylabel("DSC")
+    plt.ylim([10,95])
     plt.savefig("./dsc.png")
     plt.clf()
 
