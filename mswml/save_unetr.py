@@ -78,7 +78,7 @@ def main(args):
     for i, model in enumerate(models):
         model.load_state_dict(torch.load(os.path.join(args.path_model, 
                                                       f"seed{i+1}", 
-                                                      "Best_model_finetuning.pth")))
+                                                      "Best_model_finetuning.pth"))["model_state_dict"])
         model.eval()
 
     act = torch.nn.Softmax(dim=1)
@@ -88,7 +88,7 @@ def main(args):
 
     lesion_load, dsc, ndsc = [], [], []
 
-    ''' Evaluatioin loop '''
+    ''' Evaluation loop '''
     with Parallel(n_jobs=args.n_jobs) as parallel_backend:
         with torch.no_grad():
             for count, batch_data in enumerate(val_loader):
